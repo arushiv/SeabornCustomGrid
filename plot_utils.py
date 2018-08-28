@@ -12,11 +12,13 @@ from faceted_jointplots import SeabornFig2Grid
 def myjoint(group, x, y, **kwargs):
     """Normal hexbin jointplot """
     kind = kwargs.get('kind', "hex")
-    gridsize = kwargs.get('gridsize', None)
+    gridsize = kwargs.get('gridsize', 25)
     x_label = kwargs.get('x_label', True)
     y_label = kwargs.get('y_label', True)
     cmap = kwargs.get('cmap', "Blues")
-    g = sns.jointplot(data=group, x=x, y=y, kind=kind, joint_kws={'gridsize':gridsize, 'cmap':cmap})
+
+    N = len(group.index)
+    g = sns.jointplot(data=group, x=x, y=y, kind=kind, joint_kws={'gridsize':gridsize, 'cmap':cmap, 'bins':N})
 
     if not x_label:
         g.ax_joint.set_xlabel("")
@@ -33,7 +35,7 @@ def myjoint(group, x, y, **kwargs):
         g.ax_joint.set_ylabel(f"{group.name[0]}\n\n{kwargs['main_y_label']}")
 
     # Label x axis on lowermost facets
-    if group.name[0] == "K562":
+    if group.name[0] == kwargs['xlabcol']:
         g.ax_joint.set_xlabel(kwargs['main_x_label'])
 
     # # Label rows on the rightmost facets
@@ -54,7 +56,7 @@ def makeGrid(d, row, col, x, y, plotfunc=myjoint, figsize=(6,6), figname=None, *
     
     nrow = len(d[row].drop_duplicates())
     ncol = len(d[col].drop_duplicates())
-
+    
     kwargs['colLabel'] = d[row].drop_duplicates().sort_values().iloc[0]
     kwargs['ylabcol'] = d[col].drop_duplicates().sort_values().iloc[0]
     kwargs['xlabcol'] = d[row].drop_duplicates().sort_values(ascending=False).iloc[0]
