@@ -12,13 +12,15 @@ from faceted_jointplots import SeabornFig2Grid
 def myjoint(group, x, y, **kwargs):
     """Normal hexbin jointplot """
     kind = kwargs.get('kind', "hex")
-    gridsize = kwargs.get('gridsize', 25)
+    gridsize = kwargs.get('gridsize', 20)
     x_label = kwargs.get('x_label', True)
     y_label = kwargs.get('y_label', True)
     cmap = kwargs.get('cmap', "Blues")
-
+    x_range = kwargs.get('x_range', None)
+    y_range = kwargs.get('y_range', None)
     N = len(group.index)
-    g = sns.jointplot(data=group, x=x, y=y, kind=kind, joint_kws={'gridsize':gridsize, 'cmap':cmap, 'bins':N})
+
+    g = sns.jointplot(data=group, x=x, y=y, kind=kind, joint_kws={'gridsize':gridsize, 'mincnt':0, 'cmap':cmap, 'bins':N}, xlim=x_range, ylim=y_range)
 
     if not x_label:
         g.ax_joint.set_xlabel("")
@@ -56,7 +58,7 @@ def makeGrid(d, row, col, x, y, plotfunc=myjoint, figsize=(6,6), figname=None, *
     
     nrow = len(d[row].drop_duplicates())
     ncol = len(d[col].drop_duplicates())
-    
+
     kwargs['colLabel'] = d[row].drop_duplicates().sort_values().iloc[0]
     kwargs['ylabcol'] = d[col].drop_duplicates().sort_values().iloc[0]
     kwargs['xlabcol'] = d[row].drop_duplicates().sort_values(ascending=False).iloc[0]
