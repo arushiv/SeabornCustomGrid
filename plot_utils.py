@@ -20,6 +20,7 @@ def myjoint(group, x, y, **kwargs):
     y_range = kwargs.get('y_range', None)
     main_x_label = kwargs.get('main_x_label', "")
     main_y_label = kwargs.get('main_y_label', "")
+    save_each_fig = kwargs.get('save_each_fig', False)
     
     N = len(group.index)
 
@@ -43,6 +44,11 @@ def myjoint(group, x, y, **kwargs):
     if group.name[0] == kwargs['xlabcol']:
         g.ax_joint.set_xlabel(main_x_label)
 
+    if save_each_fig:
+        figname = f"{save_each_fig}.{group.name[0]}.{group.name[1]}.pdf"
+        plt.tight_layout()
+        plt.savefig(figname)
+        
     return g
 
 
@@ -64,6 +70,7 @@ def makeGrid(d, row, col, x, y, plotfunc=myjoint, figsize=(6,6), figname=None, *
     main_y_label : y label on the leftmost facets
     x_range : range of x axis (tuple)
     y_range : range of y axis (tuple)
+    save_each_fig : string - save each individual facet at string.groupname.pdf 
     """
     
     nrow = len(d[row].drop_duplicates())
